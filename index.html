@@ -1,0 +1,280 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kartu Pelajar SMAN 1 MAGETAN</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/lucide/0.263.0/lucide.min.js"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap');
+        
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f3f4f6;
+        }
+
+        .id-card {
+            width: 350px;
+            height: 520px;
+            background: white;
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+            position: relative;
+            border: 1px solid #e5e7eb;
+        }
+
+        .card-header {
+            background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%);
+            padding: 15px;
+            text-align: center;
+            color: white;
+        }
+
+        .photo-box {
+            width: 130px;
+            height: 170px;
+            border: 3px solid #1e3a8a;
+            margin: 20px auto;
+            background: #f9fafb;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+            border-radius: 8px;
+        }
+
+        .photo-box img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .info-section {
+            padding: 0 25px;
+        }
+
+        .info-label {
+            font-size: 10px;
+            color: #6b7280;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            margin-top: 10px;
+        }
+
+        .info-value {
+            font-size: 14px;
+            font-weight: 600;
+            color: #111827;
+            border-bottom: 1px solid #f3f4f6;
+            padding-bottom: 2px;
+        }
+
+        @media print {
+            body * {
+                visibility: hidden;
+            }
+            #card-to-print, #card-to-print * {
+                visibility: visible;
+            }
+            #card-to-print {
+                position: absolute;
+                left: 0;
+                top: 0;
+                margin: 0;
+                box-shadow: none;
+            }
+            .no-print {
+                display: none;
+            }
+        }
+    </style>
+</head>
+<body class="p-4 md:p-8">
+
+    <div class="max-w-5xl mx-auto grid grid-cols-1 lg:grid-cols-2 gap-8">
+        
+        <!-- Form Input -->
+        <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-200">
+            <div class="flex items-center gap-2 mb-6">
+                <i data-lucide="user-plus" class="text-blue-600"></i>
+                <h2 class="text-xl font-bold text-gray-800">Input Data Siswa</h2>
+            </div>
+
+            <div class="space-y-4">
+                <div>
+                    <label class="block text-sm font-medium text-gray-700">Nama Lengkap</label>
+                    <input type="text" id="inputNama" placeholder="Masukkan nama" class="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500">
+                </div>
+
+                <div>
+                    <label class="block text-sm font-medium text-gray-700">NIS / NISN</label>
+                    <input type="text" id="inputNIS" placeholder="Masukkan nomor induk" class="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500">
+                </div>
+
+                <div class="grid grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700">Kelas</label>
+                        <select id="inputKelas" class="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500">
+                            <option value="X">Sepuluh (X)</option>
+                            <option value="XI">Sebelas (XI)</option>
+                            <option value="XII">Duabelas (XII)</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700">Jurusan</label>
+                        <input type="text" id="inputJurusan" placeholder="Contoh: MIPA 1" class="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500">
+                    </div>
+                </div>
+
+                <div>
+                    <label class="block text-sm font-medium text-gray-700">Unggah Foto (3x4)</label>
+                    <input type="file" id="inputFoto" accept="image/*" class="mt-1 block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100">
+                </div>
+
+                <div class="pt-4 flex gap-2">
+                    <button onclick="window.print()" class="flex-1 bg-blue-600 text-white py-2 px-4 rounded-md hover:bg-blue-700 transition flex items-center justify-center gap-2">
+                        <i data-lucide="printer" size="18"></i> Cetak Kartu
+                    </button>
+                    <button onclick="resetForm()" class="px-4 py-2 border border-gray-300 rounded-md hover:bg-gray-50 transition">
+                        Reset
+                    </button>
+                </div>
+            </div>
+            
+            <p class="mt-6 text-xs text-gray-400 italic">
+                *Aplikasi ini berjalan secara lokal (client-side). Untuk menyimpan ke Google Drive/Sheets, Anda perlu menambahkan fungsi google.script.run di backend .gs
+            </p>
+        </div>
+
+        <!-- Preview Kartu -->
+        <div class="flex flex-col items-center justify-start">
+            <h2 class="text-lg font-semibold text-gray-600 mb-4 no-print">Preview Kartu</h2>
+            
+            <div id="card-to-print" class="id-card">
+                <!-- Header -->
+                <div class="card-header">
+                    <div class="flex items-center justify-center gap-2 mb-1">
+                        <!-- Placeholder Logo - Bisa diganti URL Logo SMAN 1 Magetan yang asli -->
+                        <div class="w-8 h-8 bg-white rounded-full flex items-center justify-center">
+                            <i data-lucide="school" class="text-blue-800" size="20"></i>
+                        </div>
+                        <h1 class="font-bold text-sm tracking-tight">KARTU PELAJAR</h1>
+                    </div>
+                    <p class="text-[10px] font-semibold uppercase">SMAN 1 MAGETAN</p>
+                    <p class="text-[8px] opacity-90">Jl. Selosari No.2, Kec. Magetan, Kabupaten Magetan</p>
+                </div>
+
+                <!-- Foto -->
+                <div class="photo-box">
+                    <img id="displayFoto" src="https://via.placeholder.com/130x170?text=FOTO+3x4" alt="Foto Siswa">
+                </div>
+
+                <!-- Info -->
+                <div class="info-section">
+                    <div>
+                        <div class="info-label">Nama Lengkap</div>
+                        <div id="displayNama" class="info-value text-blue-900 uppercase">NAMA SISWA</div>
+                    </div>
+                    
+                    <div>
+                        <div class="info-label">NIS / NISN</div>
+                        <div id="displayNIS" class="info-value">0000000000</div>
+                    </div>
+
+                    <div class="flex justify-between gap-4">
+                        <div class="flex-1">
+                            <div class="info-label">Kelas</div>
+                            <div id="displayKelas" class="info-value">X</div>
+                        </div>
+                        <div class="flex-2">
+                            <div class="info-label">Jurusan</div>
+                            <div id="displayJurusan" class="info-value">MIPA 1</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Footer Card -->
+                <div class="absolute bottom-0 w-full p-4 border-t border-gray-100 flex justify-between items-end bg-gray-50">
+                    <div>
+                        <p class="text-[8px] text-gray-500">Berlaku Selama Menjadi Siswa</p>
+                        <div class="w-16 h-16 mt-1 bg-white border p-1">
+                            <!-- Placeholder QR Code -->
+                            <img src="https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=SMAN1MAGETAN" alt="QR" class="w-full">
+                        </div>
+                    </div>
+                    <div class="text-right">
+                        <p class="text-[8px] text-gray-800 mb-6">Kepala Sekolah,</p>
+                        <p class="text-[9px] font-bold border-t border-gray-800 pt-1">Drs. Nama Kepala, M.Pd</p>
+                        <p class="text-[7px] text-gray-600">NIP. 19283746555221</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <script>
+        // Inisialisasi Ikon Lucide
+        lucide.createIcons();
+
+        // Elemen Input
+        const inNama = document.getElementById('inputNama');
+        const inNIS = document.getElementById('inputNIS');
+        const inKelas = document.getElementById('inputKelas');
+        const inJurusan = document.getElementById('inputJurusan');
+        const inFoto = document.getElementById('inputFoto');
+
+        // Elemen Display
+        const outNama = document.getElementById('displayNama');
+        const outNIS = document.getElementById('displayNIS');
+        const outKelas = document.getElementById('displayKelas');
+        const outJurusan = document.getElementById('displayJurusan');
+        const outFoto = document.getElementById('displayFoto');
+
+        // Event Listeners untuk Real-time Preview
+        inNama.addEventListener('input', (e) => {
+            outNama.innerText = e.target.value || "NAMA SISWA";
+        });
+
+        inNIS.addEventListener('input', (e) => {
+            outNIS.innerText = e.target.value || "0000000000";
+        });
+
+        inKelas.addEventListener('change', (e) => {
+            outKelas.innerText = e.target.value;
+        });
+
+        inJurusan.addEventListener('input', (e) => {
+            outJurusan.innerText = e.target.value || "MIPA 1";
+        });
+
+        // Penanganan Foto
+        inFoto.addEventListener('change', function(e) {
+            const file = e.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(event) {
+                    outFoto.src = event.target.result;
+                };
+                reader.readAsDataURL(file);
+            }
+        });
+
+        function resetForm() {
+            inNama.value = "";
+            inNIS.value = "";
+            inKelas.value = "X";
+            inJurusan.value = "";
+            inFoto.value = "";
+            
+            outNama.innerText = "NAMA SISWA";
+            outNIS.innerText = "0000000000";
+            outKelas.innerText = "X";
+            outJurusan.innerText = "MIPA 1";
+            outFoto.src = "https://via.placeholder.com/130x170?text=FOTO+3x4";
+        }
+    </script>
+</body>
+</html>
